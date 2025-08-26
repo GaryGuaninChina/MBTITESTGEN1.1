@@ -1,0 +1,1283 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sight - 人格测试 - 了解你的性格类型</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#E63946', // 苏联红
+                        secondary: '#FFB703', // 金色/黄色
+                        accent: '#1D3557', // 深蓝色
+                        dark: '#0D1B2A', // 深色
+                        light: '#F1FAEE', // 浅色背景
+                    },
+                    fontFamily: {
+                        sans: ['Helvetica', 'Arial', 'sans-serif'],
+                        display: ['Impact', 'Haettenschweiler', 'sans-serif'],
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'fade-in': 'fadeIn 0.8s ease-out',
+                        'slide-up': 'slideUp 0.6s ease-out',
+                        'slide-in': 'slideIn 0.6s ease-out',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(20px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' },
+                        },
+                        slideIn: {
+                            '0%': { transform: 'translateX(-20px)', opacity: '0' },
+                            '100%': { transform: 'translateX(0)', opacity: '1' },
+                        }
+                    }
+                },
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .text-shadow {
+                text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            }
+            .text-stroke {
+                -webkit-text-stroke: 1px #000;
+            }
+            .diagonal-line {
+                background: repeating-linear-gradient(
+                    -45deg,
+                    theme('colors.primary'),
+                    theme('colors.primary') 5px,
+                    transparent 5px,
+                    transparent 15px
+                );
+            }
+            .grid-pattern {
+                background-size: 20px 20px;
+                background-image: 
+                  linear-gradient(to right, rgba(0,0,0,0.1) 1px, transparent 1px),
+                  linear-gradient(to bottom, rgba(0,0,0,0.1) 1px, transparent 1px);
+            }
+            .soviet-border {
+                border: 3px solid theme('colors.dark');
+                box-shadow: 5px 5px 0 theme('colors.dark');
+            }
+            .btn-primary {
+                @apply bg-primary text-white px-6 py-3 font-medium transition-all duration-300 hover:bg-primary/90 transform hover:-translate-y-1 hover:shadow-lg border-2 border-dark;
+            }
+            .btn-secondary {
+                @apply bg-white border-2 border-dark text-dark px-6 py-3 font-medium transition-all duration-300 hover:bg-gray-100 transform hover:-translate-y-1 hover:shadow-md;
+            }
+        }
+    </style>
+</head>
+<body class="bg-light font-sans text-dark min-h-screen flex flex-col">
+    <!-- 顶部装饰条 -->
+    <div class="bg-primary h-3 w-full"></div>
+    
+    <!-- 导航栏 -->
+    <nav class="fixed top-3 left-0 right-0 z-50 transition-all duration-500" id="navbar">
+        <div class="bg-white border-b-2 border-dark">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-3 flex justify-between items-center">
+                <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 bg-primary flex items-center justify-center">
+                        <i class="fa fa-eye text-white"></i>
+                    </div>
+                    <h1 class="text-xl md:text-2xl font-display font-bold uppercase tracking-wider">
+                        <span class="text-primary">SIGHT</span>
+                        <span class="text-dark hidden sm:inline">· 人格测试</span>
+                    </h1>
+                </div>
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#" class="text-dark hover:text-primary transition-colors duration-300 font-bold uppercase tracking-wide relative group">
+                        首页
+                        <span class="absolute bottom-0 left-0 w-0 h-1 bg-primary transition-all duration-300 group-hover:w-full"></span>
+                    </a>
+                    <a href="#about" class="text-dark hover:text-primary transition-colors duration-300 font-bold uppercase tracking-wide relative group">
+                        关于测试
+                        <span class="absolute bottom-0 left-0 w-0 h-1 bg-primary transition-all duration-300 group-hover:w-full"></span>
+                    </a>
+                    <a href="#results" class="text-dark hover:text-primary transition-colors duration-300 font-bold uppercase tracking-wide relative group">
+                        结果示例
+                        <span class="absolute bottom-0 left-0 w-0 h-1 bg-primary transition-all duration-300 group-hover:w-full"></span>
+                    </a>
+                    <a href="#contact" class="text-dark hover:text-primary transition-colors duration-300 font-bold uppercase tracking-wide relative group">
+                        联系我们
+                        <span class="absolute bottom-0 left-0 w-0 h-1 bg-primary transition-all duration-300 group-hover:w-full"></span>
+                    </a>
+                </div>
+                <button class="md:hidden text-dark focus:outline-none" id="menu-toggle">
+                    <i class="fa fa-bars text-xl transition-transform duration-300" id="menu-icon"></i>
+                </button>
+            </div>
+        </div>
+        <!-- 移动端菜单 -->
+        <div class="md:hidden hidden bg-white border-t-2 border-dark transform transition-transform duration-300 origin-top" id="mobile-menu">
+            <div class="container mx-auto px-4 py-2 flex flex-col space-y-1">
+                <a href="#" class="text-dark hover:text-primary py-3 px-4 font-bold uppercase tracking-wide transition-colors duration-300 hover:bg-gray-100">首页</a>
+                <a href="#about" class="text-dark hover:text-primary py-3 px-4 font-bold uppercase tracking-wide transition-colors duration-300 hover:bg-gray-100">关于测试</a>
+                <a href="#results" class="text-dark hover:text-primary py-3 px-4 font-bold uppercase tracking-wide transition-colors duration-300 hover:bg-gray-100">结果示例</a>
+                <a href="#contact" class="text-dark hover:text-primary py-3 px-4 font-bold uppercase tracking-wide transition-colors duration-300 hover:bg-gray-100">联系我们</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 英雄区域 -->
+    <header class="relative pt-24 pb-20 md:pt-32 md:pb-32 overflow-hidden bg-accent text-white">
+        <!-- 背景装饰 -->
+        <div class="absolute inset-0 grid-pattern opacity-30"></div>
+        <div class="absolute top-0 left-0 w-1/3 h-full diagonal-line opacity-20"></div>
+        
+        <!-- 几何装饰元素 -->
+        <div class="absolute top-1/4 left-10 w-16 h-16 bg-primary border-4 border-white"></div>
+        <div class="absolute bottom-1/3 right-20 w-24 h-24 border-4 border-secondary"></div>
+        <div class="absolute top-1/2 right-1/4 w-10 h-10 bg-secondary transform rotate-45"></div>
+        
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="max-w-4xl mx-auto">
+                <div class="inline-block bg-primary px-4 py-1 mb-6 border-2 border-dark">
+                    <h3 class="font-display uppercase tracking-widest text-white text-lg">人格探索项目</h3>
+                </div>
+                <h1 class="text-[clamp(2.5rem,6vw,4.5rem)] font-display font-bold mb-6 leading-none uppercase tracking-tight text-shadow animate-fade-in">
+                    了解你的<br><span class="text-secondary">真实人格</span>
+                </h1>
+                <p class="text-xl md:text-2xl mb-10 text-white/90 max-w-2xl uppercase tracking-wide animate-slide-up" style="animation-delay: 0.2s">
+                    科学测试 · 精准分析 · 深刻洞察
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4 animate-slide-up" style="animation-delay: 0.4s">
+                    <button id="start-test" class="bg-primary text-white hover:bg-primary/90 px-8 py-4 font-bold text-lg transition-all duration-300 transform hover:scale-105 border-2 border-dark flex items-center justify-center uppercase tracking-wider">
+                        开始测试 <i class="fa fa-arrow-right ml-2"></i>
+                    </button>
+                    <a href="#about" class="bg-white text-dark hover:bg-gray-100 px-8 py-4 font-bold text-lg transition-all duration-300 border-2 border-dark uppercase tracking-wider">
+                        了解更多 <i class="fa fa-info-circle ml-2"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 底部装饰条 -->
+        <div class="absolute bottom-0 left-0 right-0 h-12 bg-primary"></div>
+        <div class="absolute bottom-0 left-0 right-0 h-6 bg-secondary"></div>
+    </header>
+
+    <main class="flex-grow">
+        <!-- 关于测试 -->
+        <section id="about" class="py-20 bg-white">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <!-- 装饰元素 -->
+                <div class="absolute left-0 w-16 h-16 bg-primary/10"></div>
+                <div class="absolute right-0 w-24 h-24 border-2 border-accent/20"></div>
+                
+                <div class="max-w-3xl mx-auto text-center mb-16 animate-on-scroll">
+                    <div class="inline-block bg-accent text-white px-4 py-1 mb-6 border-2 border-dark">
+                        <h3 class="font-display uppercase tracking-widest text-sm">项目介绍</h3>
+                    </div>
+                    <h2 class="text-3xl md:text-4xl lg:text-5xl font-display font-bold mb-6 text-dark uppercase tracking-tight">科学的人格测试</h2>
+                    <p class="text-lg text-dark leading-relaxed max-w-2xl mx-auto">基于心理学研究，帮助你了解自己的性格特点，发现潜在优势与发展方向。</p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+                    <div class="bg-light p-8 soviet-border animate-on-scroll" style="transition-delay: 0.1s">
+                        <div class="w-16 h-16 bg-primary flex items-center justify-center mb-6 border-2 border-dark">
+                            <i class="fa fa-flask text-white text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3 uppercase tracking-wide">科学依据</h3>
+                        <p class="text-dark leading-relaxed">基于经典心理学理论，结合现代研究成果，确保测试结果的可靠性与准确性。</p>
+                    </div>
+                    
+                    <div class="bg-light p-8 soviet-border animate-on-scroll" style="transition-delay: 0.2s">
+                        <div class="w-16 h-16 bg-accent flex items-center justify-center mb-6 border-2 border-dark">
+                            <i class="fa fa-check-square-o text-white text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3 uppercase tracking-wide">精准分析</h3>
+                        <p class="text-dark leading-relaxed">通过精心设计的问题，深入分析你的思维方式、行为模式和情感反应。</p>
+                    </div>
+                    
+                    <div class="bg-light p-8 soviet-border animate-on-scroll" style="transition-delay: 0.3s">
+                        <div class="w-16 h-16 bg-secondary flex items-center justify-center mb-6 border-2 border-dark">
+                            <i class="fa fa-lightbulb-o text-dark text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3 uppercase tracking-wide">实用建议</h3>
+                        <p class="text-dark leading-relaxed">不仅提供测试结果，还给出针对性建议，帮助你更好地发挥优势、克服挑战。</p>
+                    </div>
+                </div>
+                
+                <!-- 数据统计 -->
+                <div class="mt-20 grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto animate-on-scroll">
+                    <div class="text-center p-6 border-2 border-dark bg-light">
+                        <div class="text-4xl md:text-5xl font-display font-bold text-primary mb-2 counter" data-target="1000000">0</div>
+                        <p class="text-dark uppercase font-bold">测试用户</p>
+                    </div>
+                    <div class="text-center p-6 border-2 border-dark bg-light">
+                        <div class="text-4xl md:text-5xl font-display font-bold text-primary mb-2 counter" data-target="16">0</div>
+                        <p class="text-dark uppercase font-bold">人格类型</p>
+                    </div>
+                    <div class="text-center p-6 border-2 border-dark bg-light">
+                        <div class="text-4xl md:text-5xl font-display font-bold text-primary mb-2 counter" data-target="20">0</div>
+                        <p class="text-dark uppercase font-bold">测试题目</p>
+                    </div>
+                    <div class="text-center p-6 border-2 border-dark bg-light">
+                        <div class="text-4xl md:text-5xl font-display font-bold text-primary mb-2 counter" data-target="98">0</div>
+                        <p class="text-dark uppercase font-bold">满意度(%)</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 测试结果示例 -->
+        <section id="results" class="py-20 bg-gray-100 grid-pattern">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="max-w-3xl mx-auto text-center mb-16 animate-on-scroll">
+                    <div class="inline-block bg-secondary text-dark px-4 py-1 mb-6 border-2 border-dark">
+                        <h3 class="font-display uppercase tracking-widest text-sm">结果展示</h3>
+                    </div>
+                    <h2 class="text-3xl md:text-4xl lg:text-5xl font-display font-bold mb-6 text-dark uppercase tracking-tight">人格类型示例</h2>
+                    <p class="text-lg text-dark leading-relaxed max-w-2xl mx-auto">探索不同的人格类型，了解每种类型的独特特点和行为模式。</p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
+                    <!-- 结果卡片1 -->
+                    <div class="bg-white soviet-border overflow-hidden animate-on-scroll" style="transition-delay: 0.1s">
+                        <div class="bg-primary h-4"></div>
+                        <div class="p-8">
+                            <div class="flex items-center mb-6">
+                                <div class="w-14 h-14 bg-primary flex items-center justify-center mr-4 border-2 border-dark">
+                                    <i class="fa fa-fire text-white text-xl"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-xl font-bold uppercase">ENTJ - 领导者</h3>
+                                    <p class="text-primary font-bold">果断 · 有远见</p>
+                                </div>
+                            </div>
+                            <p class="text-dark mb-6 leading-relaxed">天生的领导者，善于制定计划并推动执行。具有很强的决断力和组织能力，能够在复杂情况下保持清晰的思路。</p>
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm text-dark font-bold">占比：2%</span>
+                                <span class="bg-primary/10 text-primary text-xs font-bold px-2.5 py-0.5 border border-primary">主导型</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 结果卡片2 -->
+                    <div class="bg-white soviet-border overflow-hidden animate-on-scroll" style="transition-delay: 0.2s">
+                        <div class="bg-accent h-4"></div>
+                        <div class="p-8">
+                            <div class="flex items-center mb-6">
+                                <div class="w-14 h-14 bg-accent flex items-center justify-center mr-4 border-2 border-dark">
+                                    <i class="fa fa-book text-white text-xl"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-xl font-bold uppercase">INFP - 理想主义者</h3>
+                                    <p class="text-accent font-bold">富有同情心 · 理想主义</p>
+                                </div>
+                            </div>
+                            <p class="text-dark mb-6 leading-relaxed">内心丰富，重视个人价值和理想。善于理解他人情感，对美和艺术有敏锐的感知力，追求意义和深度。</p>
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm text-dark font-bold">占比：8%</span>
+                                <span class="bg-accent/10 text-accent text-xs font-bold px-2.5 py-0.5 border border-accent">思考型</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 结果卡片3 -->
+                    <div class="bg-white soviet-border overflow-hidden animate-on-scroll" style="transition-delay: 0.3s">
+                        <div class="bg-secondary h-4"></div>
+                        <div class="p-8">
+                            <div class="flex items-center mb-6">
+                                <div class="w-14 h-14 bg-secondary flex items-center justify-center mr-4 border-2 border-dark">
+                                    <i class="fa fa-cogs text-dark text-xl"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-xl font-bold uppercase">ISTP - 实践能手</h3>
+                                    <p class="text-secondary font-bold">务实 · 灵活</p>
+                                </div>
+                            </div>
+                            <p class="text-dark mb-6 leading-relaxed">善于解决实际问题，动手能力强。冷静客观，在压力下表现出色，喜欢通过实践学习和掌握技能。</p>
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm text-dark font-bold">占比：5%</span>
+                                <span class="bg-secondary/10 text-secondary text-xs font-bold px-2.5 py-0.5 border border-secondary">行动型</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 查看更多按钮 -->
+                <div class="text-center mt-12 animate-on-scroll">
+                    <button class="btn-secondary inline-flex items-center uppercase font-bold tracking-wide">
+                        查看全部类型 <i class="fa fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 测试区域 -->
+        <section id="test-section" class="py-20 bg-white hidden">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="max-w-3xl mx-auto">
+                    <div class="bg-light soviet-border p-8 mb-8">
+                        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+                            <h2 class="text-2xl font-bold text-dark uppercase" id="question-number">问题 1/20</h2>
+                            <div class="w-full max-w-xs bg-gray-200 border-2 border-dark h-3">
+                                <div class="bg-primary h-full" id="progress-bar" style="width: 5%"></div>
+                            </div>
+                        </div>
+                        
+                        <div id="question-container">
+                            <h3 class="text-xl font-bold mb-6 uppercase" id="question-text">周末你更喜欢：</h3>
+                            
+                            <div class="space-y-4" id="answers-container">
+                                <button class="answer-btn w-full bg-white border-2 border-dark rounded-none px-6 py-4 text-left hover:bg-gray-100 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-50">
+                                    <span class="inline-block w-8 h-8 bg-gray-200 border-2 border-dark text-center mr-3 flex items-center justify-center font-bold">A</span>
+                                    <span>宅在家里，拉上窗帘，沉浸式刷手机</span>
+                                </button>
+                                
+                                <button class="answer-btn w-full bg-white border-2 border-dark rounded-none px-6 py-4 text-left hover:bg-gray-100 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-50">
+                                    <span class="inline-block w-8 h-8 bg-gray-200 border-2 border-dark text-center mr-3 flex items-center justify-center font-bold">B</span>
+                                    <span>约上三五好友，去探索城市的新角落</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex justify-between">
+                        <button id="prev-btn" class="btn-secondary uppercase font-bold tracking-wide">
+                            <i class="fa fa-arrow-left mr-2"></i> 上一题
+                        </button>
+                        <button id="next-btn" class="btn-primary uppercase font-bold tracking-wide">
+                            下一题 <i class="fa fa-arrow-right ml-2"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 结果区域 -->
+        <section id="result-section" class="py-20 bg-gray-100 grid-pattern hidden">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="max-w-4xl mx-auto">
+                    <div class="bg-white soviet-border overflow-hidden">
+                        <div id="result-header" class="bg-primary p-8 text-white relative">
+                            <div class="absolute top-0 right-0 w-24 h-24 border-l-4 border-b-4 border-white/30"></div>
+                            <div class="relative z-10">
+                                <h2 class="text-3xl font-bold mb-2 uppercase" id="result-title">你是 ISFP - 艺术感知型</h2>
+                                <p class="text-xl opacity-90 uppercase" id="result-subtitle">和平主义者 · 艺术气质</p>
+                            </div>
+                        </div>
+                        
+                        <div class="p-8">
+                            <div class="flex flex-col md:flex-row gap-8">
+                                <div class="md:w-1/3">
+                                    <div class="bg-light p-6 border-2 border-dark">
+                                        <div class="w-32 h-32 mx-auto bg-primary flex items-center justify-center mb-4 border-2 border-dark">
+                                            <i id="result-icon" class="fa fa-paint-brush text-white text-5xl"></i>
+                                        </div>
+                                        <h3 class="text-xl font-bold mb-3 uppercase text-center">人格特点</h3>
+                                        <ul class="text-left space-y-3">
+                                            <li class="flex items-center p-2 border-b border-gray-200">
+                                                <i class="fa fa-check text-primary mr-2"></i>
+                                                <span>佛系随缘，与世无争</span>
+                                            </li>
+                                            <li class="flex items-center p-2 border-b border-gray-200">
+                                                <i class="fa fa-check text-primary mr-2"></i>
+                                                <span>内心戏丰富，但不轻易表露</span>
+                                            </li>
+                                            <li class="flex items-center p-2 border-b border-gray-200">
+                                                <i class="fa fa-check text-primary mr-2"></i>
+                                                <span>对喜欢的事物充满热情</span>
+                                            </li>
+                                            <li class="flex items-center p-2">
+                                                <i class="fa fa-check text-primary mr-2"></i>
+                                                <span>讨厌冲突，能忍则忍</span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                
+                                <div class="md:w-2/3">
+                                    <h3 class="text-xl font-bold mb-4 uppercase">个性解读</h3>
+                                    <p class="text-dark mb-6 leading-relaxed" id="result-description">
+                                        你是一个典型的艺术感知型人格，生活中大部分时间都处于「随便啦」的状态，但一旦遇到自己真正热爱的东西，就会突然变得超级有动力，甚至有点执着。你内心有一个丰富的世界，但只在自己的小天地里展现。别人可能觉得你很安静，但实际上你心里每天都在上演各种思考。你讨厌冲突，遇到问题通常选择包容，但有时候也会坚持立场，让周围的人有些意外。
+                                    </p>
+                                    
+                                    <div class="bg-light p-6 border-2 border-dark mb-6">
+                                        <h4 class="text-lg font-bold mb-3 uppercase">个性建议</h4>
+                                        <ul class="text-dark space-y-3">
+                                            <li class="flex items-start p-2 border-b border-gray-200">
+                                                <i class="fa fa-lightbulb-o text-secondary mr-3 mt-1"></i>
+                                                <span>偶尔也可以尝试表达自己的想法，说不定别人会很感兴趣呢！</span>
+                                            </li>
+                                            <li class="flex items-start p-2 border-b border-gray-200">
+                                                <i class="fa fa-lightbulb-o text-secondary mr-3 mt-1"></i>
+                                                <span>不要总是压抑自己的情绪，找个安全的方式释放出来会感觉更好。</span>
+                                            </li>
+                                            <li class="flex items-start p-2">
+                                                <i class="fa fa-lightbulb-o text-secondary mr-3 mt-1"></i>
+                                                <span>尝试走出舒适区，你会发现外面的世界并没有那么可怕。</span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    
+                                    <div class="flex flex-wrap gap-3">
+                                        <span class="bg-primary/10 text-primary text-sm font-bold px-3 py-1 border border-primary uppercase">佛系</span>
+                                        <span class="bg-accent/10 text-accent text-sm font-bold px-3 py-1 border border-accent uppercase">脑洞大</span>
+                                        <span class="bg-secondary/10 text-secondary text-sm font-bold px-3 py-1 border border-secondary uppercase">敏感</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-light p-6 border-t-2 border-dark">
+                            <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
+                                <div>
+                                    <h4 class="text-lg font-bold mb-1 uppercase">分享你的结果</h4>
+                                    <p class="text-dark text-sm">把你的人格类型分享给朋友</p>
+                                </div>
+                                
+                                <div class="flex space-x-3">
+                                    <button class="w-10 h-10 bg-white border-2 border-dark flex items-center justify-center hover:bg-gray-100 transition-all duration-300">
+                                        <i class="fa fa-facebook text-dark"></i>
+                                    </button>
+                                    <button class="w-10 h-10 bg-white border-2 border-dark flex items-center justify-center hover:bg-gray-100 transition-all duration-300">
+                                        <i class="fa fa-twitter text-dark"></i>
+                                    </button>
+                                    <button class="w-10 h-10 bg-white border-2 border-dark flex items-center justify-center hover:bg-gray-100 transition-all duration-300">
+                                        <i class="fa fa-whatsapp text-dark"></i>
+                                    </button>
+                                    <button class="w-10 h-10 bg-white border-2 border-dark flex items-center justify-center hover:bg-gray-100 transition-all duration-300">
+                                        <i class="fa fa-link text-dark"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-10 text-center">
+                        <button id="restart-test" class="btn-primary text-lg px-8 py-4 uppercase font-bold tracking-wide">
+                            <i class="fa fa-refresh mr-2"></i> 再测一次
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 为什么选择我们 -->
+        <section class="py-20 bg-white">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="max-w-6xl mx-auto">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                        <div class="animate-on-scroll">
+                            <div class="inline-block bg-accent text-white px-4 py-1 mb-6 border-2 border-dark">
+                                <h3 class="font-display uppercase tracking-widest text-sm">项目优势</h3>
+                            </div>
+                            <h2 class="text-3xl md:text-4xl lg:text-5xl font-display font-bold mb-6 text-dark uppercase tracking-tight">科学 · 精准 · 实用</h2>
+                            <p class="text-lg text-dark mb-8 leading-relaxed">我们的人格测试基于严谨的心理学研究，结合现代生活场景，帮助你深入了解自己的性格特点。</p>
+                            
+                            <div class="space-y-6">
+                                <div class="flex gap-4 items-start p-4 border-l-4 border-primary">
+                                    <div class="w-12 h-12 bg-primary flex items-center justify-center flex-shrink-0 mt-1 border-2 border-dark">
+                                        <i class="fa fa-check text-white"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="text-xl font-bold mb-2 uppercase">科学基础</h3>
+                                        <p class="text-dark">基于经典心理学理论框架，结合现代研究成果，确保测试结果的可靠性。</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex gap-4 items-start p-4 border-l-4 border-accent">
+                                    <div class="w-12 h-12 bg-accent flex items-center justify-center flex-shrink-0 mt-1 border-2 border-dark">
+                                        <i class="fa fa-check text-white"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="text-xl font-bold mb-2 uppercase">精准分析</h3>
+                                        <p class="text-dark">通过精心设计的问题，深入分析你的思维方式、行为模式和情感反应。</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex gap-4 items-start p-4 border-l-4 border-secondary">
+                                    <div class="w-12 h-12 bg-secondary flex items-center justify-center flex-shrink-0 mt-1 border-2 border-dark">
+                                        <i class="fa fa-check text-dark"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="text-xl font-bold mb-2 uppercase">实用建议</h3>
+                                        <p class="text-dark">不仅提供测试结果，还给出针对性建议，帮助你更好地发挥优势、克服挑战。</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="relative animate-on-scroll">
+                            <div class="absolute -top-6 -left-6 w-24 h-24 border-4 border-primary"></div>
+                            <div class="absolute -bottom-6 -right-6 w-32 h-32 border-4 border-secondary"></div>
+                            <img src="https://picsum.photos/id/237/600/700" alt="人格测试场景" class="w-full h-auto border-4 border-dark relative z-10 object-cover h-[500px]">
+                            <div class="absolute -bottom-8 -left-8 bg-white p-4 border-4 border-dark z-20 max-w-xs transform transition-transform duration-300 hover:scale-105">
+                                <div class="flex items-center gap-3 mb-2">
+                                    <img src="https://picsum.photos/id/64/50/50" alt="用户头像" class="w-10 h-10 border-2 border-dark">
+                                    <div>
+                                        <h4 class="font-bold uppercase">测试者</h4>
+                                        <p class="text-sm text-dark">类型：INFP</p>
+                                    </div>
+                                </div>
+                                <p class="text-dark text-sm">"测试结果非常准确，帮助我更好地了解自己的性格特点和行为模式。"</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 联系区域 -->
+        <section id="contact" class="py-20 bg-accent text-white">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="max-w-3xl mx-auto text-center mb-16 animate-on-scroll">
+                    <div class="inline-block bg-white text-accent px-4 py-1 mb-6 border-2 border-dark">
+                        <h3 class="font-display uppercase tracking-widest text-sm">反馈与建议</h3>
+                    </div>
+                    <h2 class="text-3xl md:text-4xl lg:text-5xl font-display font-bold mb-6 uppercase tracking-tight">联系我们</h2>
+                    <p class="text-lg text-white/90 leading-relaxed max-w-2xl mx-auto">有任何问题或建议，请随时与我们联系，帮助我们不断改进测试项目。</p>
+                </div>
+                
+                <div class="bg-white text-dark soviet-border p-8 max-w-2xl mx-auto animate-on-scroll">
+                    <form id="contact-form">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                            <div>
+                                <label for="name" class="block text-sm font-bold text-dark mb-1 uppercase">姓名</label>
+                                <input type="text" id="name" class="w-full px-4 py-3 border-2 border-dark bg-light focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-300" placeholder="请输入你的姓名">
+                            </div>
+                            <div>
+                                <label for="email" class="block text-sm font-bold text-dark mb-1 uppercase">邮箱</label>
+                                <input type="email" id="email" class="w-full px-4 py-3 border-2 border-dark bg-light focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-300" placeholder="请输入你的邮箱">
+                            </div>
+                        </div>
+                        
+                        <div class="mb-6">
+                            <label for="subject" class="block text-sm font-bold text-dark mb-1 uppercase">主题</label>
+                            <input type="text" id="subject" class="w-full px-4 py-3 border-2 border-dark bg-light focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-300" placeholder="请输入主题">
+                        </div>
+                        
+                        <div class="mb-6">
+                            <label for="message" class="block text-sm font-bold text-dark mb-1 uppercase">留言</label>
+                            <textarea id="message" rows="5" class="w-full px-4 py-3 border-2 border-dark bg-light focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-300 resize-none" placeholder="请输入你的留言内容"></textarea>
+                        </div>
+                        
+                        <div class="text-center">
+                            <button type="submit" class="btn-primary inline-flex items-center px-8 py-3 uppercase font-bold tracking-wide">
+                                <i class="fa fa-paper-plane mr-2"></i> 发送留言
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+        
+        <!-- CTA区域 -->
+        <section class="py-20 bg-primary text-white relative overflow-hidden">
+            <!-- 背景装饰 -->
+            <div class="absolute inset-0 grid-pattern opacity-20"></div>
+            <div class="absolute top-0 right-0 w-1/3 h-full diagonal-line opacity-20"></div>
+            
+            <!-- 几何装饰元素 -->
+            <div class="absolute top-1/4 right-10 w-16 h-16 border-4 border-white"></div>
+            <div class="absolute bottom-1/3 left-20 w-24 h-24 bg-secondary border-4 border-dark"></div>
+            <div class="absolute top-1/2 left-1/4 w-10 h-10 bg-white transform rotate-45"></div>
+            
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                <div class="max-w-4xl mx-auto text-center animate-on-scroll">
+                    <h2 class="text-3xl md:text-4xl lg:text-5xl font-display font-bold mb-6 uppercase tracking-tight">准备好了解真实的自己了吗？</h2>
+                    <p class="text-xl md:text-2xl mb-10 text-white/90 max-w-2xl mx-auto uppercase tracking-wide">
+                        完成20个问题，发现你的独特人格类型！
+                    </p>
+                    <button id="cta-start-test" class="bg-white text-primary hover:bg-gray-100 px-10 py-5 font-bold text-lg transition-all duration-300 transform hover:scale-105 border-2 border-dark flex items-center justify-center mx-auto uppercase tracking-wider">
+                        立即开始测试 <i class="fa fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="bg-dark text-white pt-16 pb-8 border-t-4 border-primary">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-10 mb-12">
+                <div>
+                    <div class="flex items-center space-x-2 mb-6">
+                        <div class="w-8 h-8 bg-primary flex items-center justify-center">
+                            <i class="fa fa-eye text-white"></i>
+                        </div>
+                        <h2 class="text-xl font-bold uppercase tracking-wider">
+                            <span class="text-primary">SIGHT</span>
+                            <span class="text-white">· 人格测试</span>
+                        </h2>
+                    </div>
+                    <p class="text-gray-300 mb-6 leading-relaxed">科学的人格测试工具，帮助你了解自己的性格特点，发现潜在优势与发展方向。</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="w-10 h-10 bg-white/10 flex items-center justify-center text-white hover:bg-primary transition-all duration-300 border border-white/20">
+                            <i class="fa fa-facebook"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-white/10 flex items-center justify-center text-white hover:bg-primary transition-all duration-300 border border-white/20">
+                            <i class="fa fa-twitter"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-white/10 flex items-center justify-center text-white hover:bg-primary transition-all duration-300 border border-white/20">
+                            <i class="fa fa-instagram"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-white/10 flex items-center justify-center text-white hover:bg-primary transition-all duration-300 border border-white/20">
+                            <i class="fa fa-youtube-play"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-bold mb-6 uppercase tracking-wide">快速链接</h3>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="text-gray-300 hover:text-white transition-colors duration-300 uppercase">首页</a></li>
+                        <li><a href="#about" class="text-gray-300 hover:text-white transition-colors duration-300 uppercase">关于测试</a></li>
+                        <li><a href="#results" class="text-gray-300 hover:text-white transition-colors duration-300 uppercase">结果示例</a></li>
+                        <li><a href="#contact" class="text-gray-300 hover:text-white transition-colors duration-300 uppercase">联系我们</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-bold mb-6 uppercase tracking-wide">人格类型</h3>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="text-gray-300 hover:text-white transition-colors duration-300 uppercase">ISTJ - 务实型</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white transition-colors duration-300 uppercase">ENFP - 探索型</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white transition-colors duration-300 uppercase">INTJ - 战略型</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white transition-colors duration-300 uppercase">ESFP - 社交型</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white transition-colors duration-300 uppercase">查看全部</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-bold mb-6 uppercase tracking-wide">订阅更新</h3>
+                    <p class="text-gray-300 mb-4">获取最新的人格测试内容和研究成果！</p>
+                    <form class="flex flex-col sm:flex-row gap-2">
+                        <input type="email" placeholder="你的邮箱" class="px-4 py-3 border-2 border-white/30 bg-white/10 text-white focus:outline-none focus:border-primary w-full">
+                        <button type="submit" class="bg-primary hover:bg-primary/90 px-4 py-3 transition-colors duration-300 whitespace-nowrap uppercase font-bold border-2 border-dark">
+                            订阅
+                        </button>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center">
+                <p class="text-gray-400 text-sm mb-4 md:mb-0 uppercase">© 2025 SIGHT 人格测试. 保留所有权利.</p>
+                <div class="flex space-x-6">
+                    <a href="#" class="text-gray-400 hover:text-white text-sm transition-colors duration-300 uppercase">隐私政策</a>
+                    <a href="#" class="text-gray-400 hover:text-white text-sm transition-colors duration-300 uppercase">使用条款</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 返回顶部按钮 -->
+    <button id="back-to-top" class="fixed bottom-6 right-6 bg-primary text-white w-12 h-12 flex items-center justify-center border-2 border-dark transition-all duration-300 opacity-0 translate-y-10 z-50">
+        <i class="fa fa-arrow-up"></i>
+    </button>
+
+    <script>
+        // 移动菜单切换
+        document.getElementById('menu-toggle').addEventListener('click', function() {
+            const mobileMenu = document.getElementById('mobile-menu');
+            const menuIcon = document.getElementById('menu-icon');
+            
+            mobileMenu.classList.toggle('hidden');
+            menuIcon.classList.toggle('fa-bars');
+            menuIcon.classList.toggle('fa-times');
+        });
+
+        // 滚动时导航栏效果
+        window.addEventListener('scroll', function() {
+            const navbar = document.getElementById('navbar');
+            const backToTop = document.getElementById('back-to-top');
+            
+            // 导航栏效果
+            if (window.scrollY > 50) {
+                navbar.classList.add('py-2', 'shadow-md');
+            } else {
+                navbar.classList.remove('py-2', 'shadow-md');
+            }
+            
+            // 返回顶部按钮显示/隐藏
+            if (window.scrollY > 300) {
+                backToTop.classList.remove('opacity-0', 'translate-y-10');
+                backToTop.classList.add('opacity-100', 'translate-y-0');
+            } else {
+                backToTop.classList.add('opacity-0', 'translate-y-10');
+                backToTop.classList.remove('opacity-100', 'translate-y-0');
+            }
+            
+            // 滚动动画
+            const animatedElements = document.querySelectorAll('.animate-on-scroll');
+            animatedElements.forEach(element => {
+                const elementTop = element.getBoundingClientRect().top;
+                const elementVisible = 150;
+                
+                if (elementTop < window.innerHeight - elementVisible) {
+                    element.classList.add('visible');
+                }
+            });
+        });
+
+        // 返回顶部功能
+        document.getElementById('back-to-top').addEventListener('click', function() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+
+        // 数字计数器动画
+        function animateCounters() {
+            const counters = document.querySelectorAll('.counter');
+            const speed = 200;
+            
+            counters.forEach(counter => {
+                const updateCount = () => {
+                    const target = +counter.getAttribute('data-target');
+                    const count = +counter.innerText;
+                    const increment = target / speed;
+                    
+                    if (count < target) {
+                        counter.innerText = Math.ceil(count + increment);
+                        setTimeout(updateCount, 1);
+                    } else {
+                        counter.innerText = target.toLocaleString();
+                    }
+                };
+                
+                updateCount();
+            });
+        }
+
+        // 监听元素是否进入视口，触发计数器动画
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    animateCounters();
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+
+        const statsSection = document.querySelector('.counter').parentElement.parentElement;
+        if (statsSection) {
+            observer.observe(statsSection);
+        }
+
+        // 表单提交处理
+        document.getElementById('contact-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // 模拟表单提交
+            const submitButton = this.querySelector('button[type="submit"]');
+            const originalText = submitButton.innerHTML;
+            
+            submitButton.disabled = true;
+            submitButton.innerHTML = '<i class="fa fa-spinner fa-spin mr-2"></i> 发送中...';
+            
+            setTimeout(() => {
+                submitButton.innerHTML = '<i class="fa fa-check mr-2"></i> 发送成功!';
+                submitButton.classList.remove('bg-primary');
+                submitButton.classList.add('bg-green-600');
+                
+                // 重置表单
+                this.reset();
+                
+                // 恢复按钮状态
+                setTimeout(() => {
+                    submitButton.disabled = false;
+                    submitButton.innerHTML = originalText;
+                    submitButton.classList.remove('bg-green-600');
+                    submitButton.classList.add('bg-primary');
+                }, 3000);
+            }, 1500);
+        });
+
+        // 测试问题数据
+        const questions = [
+            {
+                text: "周末你更喜欢：",
+                answers: [
+                    { text: "宅在家里，拉上窗帘，沉浸式刷手机", type: "I" },
+                    { text: "约上三五好友，去探索城市的新角落", type: "E" }
+                ]
+            },
+            {
+                text: "当你需要做决定时：",
+                answers: [
+                    { text: "深思熟虑，权衡各种可能性", type: "T" },
+                    { text: "跟着感觉走，相信自己的直觉", type: "F" }
+                ]
+            },
+            {
+                text: "面对新环境，你通常会：",
+                answers: [
+                    { text: "小心翼翼，观察一段时间再行动", type: "J" },
+                    { text: "充满好奇，立刻开始探索", type: "P" }
+                ]
+            },
+            {
+                text: "你更喜欢哪种类型的电影：",
+                answers: [
+                    { text: "逻辑严密、充满推理的悬疑片", type: "N" },
+                    { text: "情感丰富、让人感同身受的剧情片", type: "S" }
+                ]
+            },
+            {
+                text: "当你和朋友有分歧时：",
+                answers: [
+                    { text: "坚持自己的观点，直到说服对方", type: "T" },
+                    { text: "尽量避免冲突，选择妥协或和解", type: "F" }
+                ]
+            },
+            {
+                text: "在工作/学习中，你更倾向于：",
+                answers: [
+                    { text: "按照计划有条不紊地进行", type: "J" },
+                    { text: "灵活应对，根据情况调整计划", type: "P" }
+                ]
+            },
+            {
+                text: "你更关注：",
+                answers: [
+                    { text: "事实和细节", type: "S" },
+                    { text: "意义和可能性", type: "N" }
+                ]
+            },
+            {
+                text: "当你参加社交活动后，你会感觉：",
+                answers: [
+                    { text: "有点疲惫，需要独处恢复能量", type: "I" },
+                    { text: "充满活力，期待下一次活动", type: "E" }
+                ]
+            },
+            {
+                text: "做决定时，你更看重：",
+                answers: [
+                    { text: "逻辑和理性分析", type: "T" },
+                    { text: "他人的感受和需求", type: "F" }
+                ]
+            },
+            {
+                text: "对于未来的计划，你通常：",
+                answers: [
+                    { text: "提前制定详细计划", type: "J" },
+                    { text: "走一步看一步，保持开放心态", type: "P" }
+                ]
+            },
+            {
+                text: "你更喜欢哪种学习方式：",
+                answers: [
+                    { text: "通过实际操作和经验学习", type: "S" },
+                    { text: "通过思考和理论学习", type: "N" }
+                ]
+            },
+            {
+                text: "当你有空闲时间时，你更可能：",
+                answers: [
+                    { text: "独自做自己喜欢的事情", type: "I" },
+                    { text: "和朋友一起度过", type: "E" }
+                ]
+            },
+            {
+                text: "面对批评，你会：",
+                answers: [
+                    { text: "认真反思，努力改进", type: "T" },
+                    { text: "感到难过，但尽量不表现出来", type: "F" }
+                ]
+            },
+            {
+                text: "你更倾向于：",
+                answers: [
+                    { text: "关注当前现实", type: "S" },
+                    { text: "关注未来可能性", type: "N" }
+                ]
+            },
+            {
+                text: "在团队中，你通常扮演：",
+                answers: [
+                    { text: "组织者和协调者", type: "J" },
+                    { text: "创意提供者和灵活应变者", type: "P" }
+                ]
+            },
+            {
+                text: "你更喜欢哪种类型的书籍：",
+                answers: [
+                    { text: "实用指南和事实性书籍", type: "S" },
+                    { text: "科幻小说和哲学思考", type: "N" }
+                ]
+            },
+            {
+                text: "当你需要放松时，你会：",
+                answers: [
+                    { text: "做一些安静的活动，如阅读或冥想", type: "I" },
+                    { text: "参加社交活动或去热闹的地方", type: "E" }
+                ]
+            },
+            {
+                text: "你更看重：",
+                answers: [
+                    { text: "公平和正义", type: "T" },
+                    { text: "和谐和人际关系", type: "F" }
+                ]
+            },
+            {
+                text: "你更倾向于：",
+                answers: [
+                    { text: "提前规划好一切", type: "J" },
+                    { text: "顺其自然，灵活应对", type: "P" }
+                ]
+            },
+            {
+                text: "你认为自己更像是：",
+                answers: [
+                    { text: "理性的思考者", type: "T" },
+                    { text: "感性的共情者", type: "F" }
+                ]
+            }
+        ];
+
+        // MBTI结果数据
+        const results = {
+            "ISTJ": {
+                title: "ISTJ - 务实组织者",
+                subtitle: "靠谱担当 · 严谨认真",
+                description: "你是一个务实的组织者，生活中井井有条，做事严谨认真。你是团队里最靠谱的人，总能按时完成任务。但私下里，你可能连袜子都要分类存放，对细节的执着程度让人惊叹。你不喜欢冒险和不确定性，更喜欢按照计划行事。别人可能觉得你有点严肃，但其实你内心也有温和的一面，只是很少表现出来。",
+                icon: "fa-cogs",
+                tags: ["靠谱", "有条理", "务实"]
+            },
+            "ISFJ": {
+                title: "ISFJ - 体贴守护者",
+                subtitle: "贴心人 · 默默付出",
+                description: "你是一个体贴的守护者，总是默默为他人付出，不求回报。你很擅长照顾别人的感受，是朋友们的贴心人。但其实你内心有很多想法和感受，只是不善于表达出来。你不喜欢冲突，总是尽量避免矛盾，但有时候也会因为太迁就别人而委屈自己。你是一个很好的倾听者，但也需要学会表达自己的需求。",
+                icon: "fa-heart",
+                tags: ["体贴", "耐心", "善良"]
+            },
+            "INFJ": {
+                title: "INFJ - 洞察理想家",
+                subtitle: "深邃思考者 · 理想主义",
+                description: "你是一个洞察理想家，内心充满了深刻的思考和洞察力。你有很强的直觉，能够看透别人的心思和动机。但你很少表露自己的真实想法，总是保持一种神秘感。私下里，你可能是个追剧爱好者，沉浸在各种虚构的世界里。你有自己的理想和信念，并且会为之努力奋斗。别人可能觉得你很难理解，但其实你只是在寻找真正能够与你心灵相通的人。",
+                icon: "fa-eye",
+                tags: ["深刻", "有洞察力", "理想主义"]
+            },
+            "INTJ": {
+                title: "INTJ - 战略思想家",
+                subtitle: "战略大师 · 逻辑分析",
+                description: "你是一个战略思想家，思维敏捷，有很强的逻辑分析能力。你善于制定计划和策略，能够看到事情的长远发展。但在生活中，你可能连外卖都不知道点什么，对一些琐事缺乏兴趣。你有自己的一套价值观和原则，并且会坚持自己的想法。别人可能觉得你有点冷漠，但其实你只是在专注于自己的目标。",
+                icon: "fa-lightbulb-o",
+                tags: ["独立", "有远见", "理性"]
+            },
+            "ISTP": {
+                title: "ISTP - 实践能手",
+                subtitle: "动手能力强 · 冷静客观",
+                description: "你是一个实践能手，动手能力极强，对各种工具和机械都有浓厚的兴趣。你喜欢挑战和冒险，能够在压力下保持冷静。但在生活中，你可能连点个外卖都要纠结半小时，对一些选择感到困扰。你不喜欢过多的规划和约束，更喜欢顺其自然。别人可能觉得你有点冷漠，但其实你只是在专注于解决眼前的问题。",
+                icon: "fa-wrench",
+                tags: ["务实", "冷静", "灵活"]
+            },
+            "ISFP": {
+                title: "ISFP - 艺术感知型",
+                subtitle: "和平主义者 · 艺术气质",
+                description: "你是一个艺术感知型人格，生活中大部分时间都处于「随便啦」的状态，但一旦遇到自己真正热爱的东西，就会突然变得超级有动力，甚至有点执着。你内心有一个丰富的世界，但只在自己的小天地里展现。别人可能觉得你很安静，但实际上你心里每天都在上演各种思考。你讨厌冲突，遇到问题通常选择包容，但有时候也会坚持立场，让周围的人有些意外。",
+                icon: "fa-paint-brush",
+                tags: ["佛系", "敏感", "有创造力"]
+            },
+            "INFP": {
+                title: "INFP - 理想主义者",
+                subtitle: "内心丰富 · 追求意义",
+                description: "你是一个理想主义者，满脑子都是诗和远方，但身体却很诚实，瘫在沙发上一动不想动。你有一个丰富的内心世界，充满了幻想和创造力。你很敏感，对周围的人和事都有深刻的感受。但你不喜欢表达自己的情感，更喜欢把它们藏在心里。你讨厌压力和束缚，更喜欢自由自在的生活。别人可能觉得你有点懒散，但其实你只是在寻找生活的意义。",
+                icon: "fa-book",
+                tags: ["理想主义", "有同情心", "敏感"]
+            },
+            "INTP": {
+                title: "INTP - 逻辑分析型",
+                subtitle: "思考机器 · 抽象思维",
+                description: "你是一个逻辑分析型人格，思维敏捷，对各种抽象的理论和概念都有浓厚的兴趣。你喜欢思考和探索，能够深入分析问题。但在生活中，你可能连袜子都分不清左右，对一些实际的事情缺乏兴趣。你有自己的一套思维方式和逻辑体系，并且会坚持自己的想法。别人可能觉得你有点古怪，但其实你只是在专注于自己的思考。",
+                icon: "fa-calculator",
+                tags: ["理性", "好奇", "有逻辑"]
+            },
+            "ESTP": {
+                title: "ESTP - 活力实践者",
+                subtitle: "行动派 · 热爱冒险",
+                description: "你是一个活力实践者，喜欢热闹和刺激的活动。你善于与人交往，能够很快地和陌生人打成一片。你喜欢冒险和挑战，对新事物充满了好奇心。但在生活中，你可能连电费都不会交，对一些琐事缺乏耐心。你不喜欢规划和约束，更喜欢自由自在地生活。别人可能觉得你有点冲动，但其实你只是在享受生活的乐趣。",
+                icon: "fa-users",
+                tags: ["外向", "冒险", "灵活"]
+            },
+            "ESFP": {
+                title: "ESFP - 社交活跃型",
+                subtitle: "人群焦点 · 活力四射",
+                description: "你是一个社交活跃型人格，喜欢成为人群中的焦点。你善于表达自己，能够吸引别人的注意力。你喜欢热闹和欢乐的场合，总是充满了活力和热情。但在生活中，你可能私下是个宅家小能手，喜欢在家里看电影、追剧、吃零食。你不喜欢压力和烦恼，更喜欢轻松愉快的生活。别人可能觉得你有点肤浅，但其实你只是在享受生活的美好。",
+                icon: "fa-music",
+                tags: ["外向", "友好", "乐观"]
+            },
+            "ENFP": {
+                title: "ENFP - 快乐探索型",
+                subtitle: "永远好奇 · 热情洋溢",
+                description: "你是一个快乐探索型人格，永远充满了活力和热情。你喜欢与人交往，善于发现生活中的美好。你有很多的兴趣爱好，对新事物充满了好奇心。但在生活中，你可能私下也会安静思考，对一些事情感到困惑和迷茫。你不喜欢孤独和寂寞，更喜欢和朋友们在一起。别人可能觉得你有点幼稚，但其实你只是在保持一颗年轻的心。",
+                icon: "fa-smile-o",
+                tags: ["热情", "有创造力", "友好"]
+            },
+            "ENTP": {
+                title: "ENTP - 辩论思考型",
+                subtitle: "辩论高手 · 机智灵活",
+                description: "你是一个辩论思考型人格，思维敏捷，口才出众。你喜欢与人辩论，能够快速地找到对方的漏洞和弱点。你有很强的好奇心和求知欲，对各种问题都有自己的看法和见解。但在生活中，你可能连自己都说服不了，对一些事情感到矛盾和困惑。你不喜欢一成不变的生活，更喜欢挑战和创新。别人可能觉得你有点咄咄逼人，但其实你只是在追求真理。",
+                icon: "fa-bullhorn",
+                tags: ["聪明", "好奇", "机智"]
+            },
+            "ESTJ": {
+                title: "ESTJ - 高效管理者",
+                subtitle: "组织者 · 果断坚决",
+                description: "你是一个高效管理者，喜欢掌控局面，指挥别人。你有很强的组织能力和领导才能，能够有效地管理团队。你注重效率和结果，对自己和别人都有很高的要求。但在生活中，你可能连快递都不敢催，对一些琐事感到无奈。你不喜欢模糊和不确定的事情，更喜欢明确的规则和计划。别人可能觉得你有点专制，但其实你只是在追求卓越。",
+                icon: "fa-trophy",
+                tags: ["有领导力", "果断", "有条理"]
+            },
+            "ESFJ": {
+                title: "ESFJ - 社交协调者",
+                subtitle: "朋友圈粘合剂 · 热心肠",
+                description: "你是一个社交协调者，喜欢与人交往，善于组织活动。你有很强的亲和力和沟通能力，能够让别人感到舒适和放松。你注重人际关系，对朋友和家人都非常关心和照顾。但在生活中，你可能私下也需要独处充电，对一些社交活动感到疲惫。你不喜欢冲突和矛盾，更喜欢和谐和团结。别人可能觉得你有点过于在意别人的看法，但其实你只是在维护良好的人际关系。",
+                icon: "fa-comments",
+                tags: ["友好", "有责任心", "善于社交"]
+            },
+            "ENFJ": {
+                title: "ENFJ - 激励领导者",
+                subtitle: "引导者 · 鼓舞人心",
+                description: "你是一个激励领导者，喜欢帮助别人，鼓励别人。你有很强的同理心和洞察力，能够理解别人的感受和需求。你善于与人沟通，能够给别人提供有效的建议和指导。但在生活中，你可能私下也会有脆弱时刻，对一些事情感到无助和迷茫。你不喜欢看到别人不开心，总是尽力让别人感到快乐和满足。别人可能觉得你有点过于完美，但其实你只是在追求内心的平静和满足。",
+                icon: "fa-handshake-o",
+                tags: ["有领导力", "有同情心", "理想主义"]
+            },
+            "ENTJ": {
+                title: "ENTJ - 果断领导者",
+                subtitle: "团队核心 · 远见卓识",
+                description: "你是一个果断领导者，喜欢掌控局面，指挥别人。你有很强的组织能力和领导才能，能够有效地管理团队。你注重效率和结果，对自己和别人都有很高的要求。但在生活中，你可能连快递都不敢催，对一些琐事感到无奈。你不喜欢模糊和不确定的事情，更喜欢明确的规则和计划。别人可能觉得你有点专制，但其实你只是在追求卓越。",
+                icon: "fa-suitcase",
+                tags: ["有领导力", "果断", "有远见"]
+            }
+        };
+
+        // 测试逻辑
+        let currentQuestion = 0;
+        const answers = {};
+        
+        // 开始测试
+        document.getElementById('start-test').addEventListener('click', function() {
+            document.querySelector('header').scrollIntoView({ behavior: 'smooth' });
+            setTimeout(() => {
+                document.getElementById('test-section').classList.remove('hidden');
+                document.getElementById('restart-test').classList.add('hidden');
+                loadQuestion(0);
+                
+                // 添加进入动画
+                const testSection = document.getElementById('test-section');
+                testSection.classList.add('animate-fade-in');
+                setTimeout(() => {
+                    testSection.classList.remove('animate-fade-in');
+                }, 800);
+            }, 800);
+        });
+        
+        // CTA区域开始测试按钮
+        document.getElementById('cta-start-test').addEventListener('click', function() {
+            document.getElementById('test-section').classList.remove('hidden');
+            document.getElementById('restart-test').classList.add('hidden');
+            loadQuestion(0);
+            
+            // 滚动到测试区域
+            document.getElementById('test-section').scrollIntoView({ behavior: 'smooth' });
+            
+            // 添加进入动画
+            const testSection = document.getElementById('test-section');
+            testSection.classList.add('animate-fade-in');
+            setTimeout(() => {
+                testSection.classList.remove('animate-fade-in');
+            }, 800);
+        });
+        
+        // 重新测试
+        document.getElementById('restart-test').addEventListener('click', function() {
+            currentQuestion = 0;
+            Object.keys(answers).forEach(key => delete answers[key]);
+            document.getElementById('result-section').classList.add('hidden');
+            document.getElementById('test-section').classList.remove('hidden');
+            
+            // 滚动到测试区域
+            document.getElementById('test-section').scrollIntoView({ behavior: 'smooth' });
+            
+            setTimeout(() => {
+                loadQuestion(0);
+                
+                // 添加进入动画
+                const testSection = document.getElementById('test-section');
+                testSection.classList.add('animate-fade-in');
+                setTimeout(() => {
+                    testSection.classList.remove('animate-fade-in');
+                }, 800);
+            }, 800);
+        });
+        
+        // 加载问题
+        function loadQuestion(index) {
+            if (index < 0 || index >= questions.length) return;
+            
+            const question = questions[index];
+            document.getElementById('question-number').textContent = `问题 ${index + 1}/${questions.length}`;
+            document.getElementById('question-text').textContent = question.text;
+            document.getElementById('progress-bar').style.width = `${((index + 1) / questions.length) * 100}%`;
+            
+            const answersContainer = document.getElementById('answers-container');
+            answersContainer.innerHTML = '';
+            
+            question.answers.forEach((answer, answerIndex) => {
+                const answerBtn = document.createElement('button');
+                answerBtn.className = 'answer-btn w-full bg-white border-2 border-dark rounded-none px-6 py-4 text-left hover:bg-gray-100 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-50';
+                
+                const letter = String.fromCharCode(65 + answerIndex);
+                answerBtn.innerHTML = `
+                    <span class="inline-block w-8 h-8 bg-gray-200 border-2 border-dark text-center mr-3 flex items-center justify-center font-bold">${letter}</span>
+                    <span>${answer.text}</span>
+                `;
+                
+                answerBtn.addEventListener('click', function() {
+                    // 移除之前选择的样式
+                    document.querySelectorAll('.answer-btn').forEach(btn => {
+                        btn.classList.remove('bg-primary/10', 'border-primary');
+                        btn.classList.add('bg-white', 'border-dark');
+                    });
+                    
+                    // 添加当前选择的样式
+                    answerBtn.classList.remove('bg-white', 'border-dark');
+                    answerBtn.classList.add('bg-primary/10', 'border-primary');
+                    
+                    // 保存答案
+                    answers[index] = answer.type;
+                });
+                
+                // 如果之前已经选择过，恢复选中状态
+                if (answers[index] === answer.type) {
+                    answerBtn.classList.remove('bg-white', 'border-dark');
+                    answerBtn.classList.add('bg-primary/10', 'border-primary');
+                }
+                
+                answersContainer.appendChild(answerBtn);
+            });
+            
+            // 更新按钮状态
+            document.getElementById('prev-btn').disabled = index === 0;
+            document.getElementById('next-btn').innerHTML = index === questions.length - 1 ? '查看结果 <i class="fa fa-arrow-right ml-2"></i>' : '下一题 <i class="fa fa-arrow-right ml-2"></i>';
+            document.getElementById('next-btn').classList.toggle('bg-secondary', index === questions.length - 1);
+            document.getElementById('next-btn').classList.toggle('bg-primary', index !== questions.length - 1);
+            
+            currentQuestion = index;
+        }
+        
+        // 上一题按钮
+        document.getElementById('prev-btn').addEventListener('click', function() {
+            if (currentQuestion > 0) {
+                loadQuestion(currentQuestion - 1);
+            }
+        });
+        
+        // 下一题按钮
+        document.getElementById('next-btn').addEventListener('click', function() {
+            if (currentQuestion === questions.length - 1) {
+                // 计算结果
+                calculateResult();
+            } else {
+                if (answers[currentQuestion] !== undefined) {
+                    loadQuestion(currentQuestion + 1);
+                } else {
+                    // 提示用户选择一个答案
+                    alert('请选择一个答案');
+                }
+            }
+        });
+        
+        // 计算结果
+        function calculateResult() {
+            const counts = {
+                "I": 0, "E": 0,
+                "S": 0, "N": 0,
+                "T": 0, "F": 0,
+                "J": 0, "P": 0
+            };
+            
+            // 统计每个类型的答案数量
+            Object.values(answers).forEach(answer => {
+                counts[answer]++;
+            });
+            
+            // 确定MBTI类型
+            let mbtiType = '';
+            mbtiType += counts["I"] >= counts["E"] ? "I" : "E";
+            mbtiType += counts["S"] >= counts["N"] ? "S" : "N";
+            mbtiType += counts["T"] >= counts["F"] ? "T" : "F";
+            mbtiType += counts["J"] >= counts["P"] ? "J" : "P";
+            
+            // 显示结果
+            showResult(mbtiType);
+        }
+        
+        // 显示结果
+        function showResult(mbtiType) {
+            const result = results[mbtiType] || results["INFP"]; // 默认使用INFP
+            
+            document.getElementById('result-title').textContent = result.title;
+            document.getElementById('result-subtitle').textContent = result.subtitle;
+            document.getElementById('result-description').textContent = result.description;
+            document.getElementById('result-icon').className = `fa ${result.icon} text-white text-5xl`;
+            
+            // 显示结果页面
+            document.getElementById('test-section').classList.add('hidden');
+            document.getElementById('result-section').classList.remove('hidden');
+            
+            // 添加进入动画
+            const resultSection = document.getElementById('result-section');
+            resultSection.classList.add('animate-fade-in');
+            setTimeout(() => {
+                resultSection.classList.remove('animate-fade-in');
+            }, 800);
+            
+            // 滚动到结果区域
+            document.getElementById('result-section').scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        // 平滑滚动
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    // 关闭移动菜单
+                    document.getElementById('mobile-menu').classList.add('hidden');
+                    document.getElementById('menu-icon').classList.add('fa-bars');
+                    document.getElementById('menu-icon').classList.remove('fa-times');
+                    
+                    // 滚动到目标位置
+                    targetElement.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // 页面加载完成后初始化
+        window.addEventListener('load', function() {
+            // 触发一次滚动事件，初始化动画状态
+            window.dispatchEvent(new Event('scroll'));
+        });
+    </script>
+</body>
+</html>
